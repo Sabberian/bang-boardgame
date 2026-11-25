@@ -1,0 +1,22 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const {Server}=require('boardgame.io/server');
+const {Client}=require('boardgame.io/client');
+const {SocketIO}=require('boardgame.io/multiplayer');
+const {Bang,setup,act}=require('../build/engine/src/game.js');
+const sets=['dodge','valley','gold','shadows','wildwest','highnoon','fistful','armed','train','promos','legends'];
+const identity=a=>[...a];
+function step(g,id,a){const r=act(g,id,a,identity);assert.equal(r.error,undefined);return r.state;}
+const card=(id,kind,suit='H',rank=5)=>({id,kind,suit,rank});
+function seed(scenario){let g=setup(4,identity,sets);for(const id of g.seats)g=step(g,id,{type:'ready'});g=step(g,'0',{type:'start'});g.queue=[];g.drawn=true;g.active='0';g.discard=[];g.event=undefined;g.wws=undefined;for(const p of Object.values(g.players)){p.character='willy';p.hand=[];p.table=[];p.hp=4;p.maxHp=4;p.handCount=0;}
+ if(scenario==='rhum'){g.players['0'].hp=3;g.players['0'].gold=20;g.market=[{id:'fixture-rhum',kind:'rhum'}];g=step(g,'0',{type:'buy',card:'fixture-rhum'});g.deck=['H','H','C','S'].map((s,i)=>card('fixture-draw-'+i,'bang',s));}
+ else {g.players['1'].hp=2;g.players['1'].hand=[card('fixture-cactus','cactus')];g.deck.unshift(card('fixture-effective','bang','S'));g.event='blessing';g.queue=[{kind:'shot',player:'1',source:'0',count:1}];}
+ g.undo=[];return g;}
+const game={...Bang,name:'bang-receipts-fixture',setup:(_ctx,data)=>seed(data.scenario)};
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+async function until(fn){for(let i=0;i<400;i++){if(fn())return;await delay(15);}throw Error('timeout');}
+function digest(g){g=structuredClone(g);for(const k of ['revision','manual','log','canUndo','errors'])delete g[k];return g;}
+(async()=>{const srv=Server({games:[game],origins:['http://localhost:3004']});const handles=await srv.run(3004);const server='http://localhost:3004',reports=[];async function post(path,body){const r=await fetch(server+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});assert.equal(r.status,200);return r.json();}
+try{for(const scenario of ['cactus','rhum']){const {matchID}=await post('/games/'+game.name+'/create',{numPlayers:4,setupData:{scenario,expansions:sets}});const clients=[];try{for(let i=0;i<4;i++){const {playerCredentials}=await post(`/games/${game.name}/${matchID}/join`,{playerID:String(i),playerName:'Fixture '+i});const c=Client({game,matchID,playerID:String(i),credentials:playerCredentials,multiplayer:SocketIO({server}),debug:false});c.start();clients.push(c);}const watch=Client({game,matchID,multiplayer:SocketIO({server}),debug:false});watch.start();clients.push(watch);await until(()=>clients.every(c=>c.getState()?.isConnected));async function send(id,a){const rev=clients[id].getState().G.revision;clients[id].moves.act(a);await until(()=>clients.every(c=>c.getState().G.revision>rev));}
+const before=clients.map(c=>digest(c.getState().G));const id=scenario==='cactus'?1:0,action=scenario==='cactus'?{type:'respond',card:'fixture-cactus'}:{type:'equipment-effect'};await send(id,action);const receipts=watch.getState().G.checkHistory;assert.equal(receipts.length,scenario==='cactus'?1:4);for(const c of clients){assert.deepEqual(c.getState().G.checkHistory,receipts);assert.deepEqual(c.getState().G.deck,[]);}if(scenario==='cactus'){assert.equal(receipts[0].effectiveSuit,'H');assert.equal(receipts[0].card.suit,'S');assert.equal(watch.getState().G.players['1'].hp,3);}else {assert.equal(watch.getState().G.players['0'].hp,4);assert.deepEqual(receipts.map(r=>r.card.suit),['H','H','C','S']);assert.ok(receipts.every(r=>r.result.includes(': 1.')));}
+await send(id,{type:'mode',enabled:true});await send(id,{type:'undo'});clients.forEach((c,i)=>assert.deepEqual(digest(c.getState().G),before[i]));await send(id,{type:'mode',enabled:false});await send(id,action);clients.forEach(c=>assert.deepEqual(c.getState().G.checkHistory,receipts));reports.push({scenario,matchID,views:5,undoReplay:true,receipts});}finally{clients.forEach(c=>c.stop());}}fs.writeFileSync('docs/qa/release-nov21-receipt-fixtures.json',JSON.stringify({method:'Deterministically seeded isolated Socket.IO server on port 3004, four clients plus spectator; not natural party or UI test.',reports},null,2));console.log(JSON.stringify(reports));}finally{srv.kill(handles);}})().then(()=>process.exit(0)).catch(e=>{console.error(e);process.exit(1);});

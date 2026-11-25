@@ -1,0 +1,108 @@
+/* Readable pieces, restrained motion and public feedback around the felt. */
+.fitted-table .table-scene{max-width:1500px;margin-inline:auto}
+.fitted-table .player{max-width:330px;border-radius:12px}
+@media(min-width:901px){
+ .fitted-table :is(.players-3,.players-4) .player:has(.equipment:not(:empty)){padding-right:100px}
+ .fitted-table :is(.players-3,.players-4) .player>.equipment:not(:empty){position:absolute;grid-column:auto;grid-row:auto;right:7px;top:50%;transform:translateY(-50%);width:84px;border-top:0;padding:0;gap:3px}
+ .fitted-table :is(.players-3,.players-4) .equipment .load-wrap{flex:0 1 38px;min-width:8px}
+ .fitted-table :is(.players-3,.players-4) .equipment .card-wrap.small{width:38px}
+}
+@media(min-width:901px) and (max-height:850px){
+ .game.fitted-table{--hand-height:clamp(210px,29vh,245px)}
+ .fitted-table :is(.players-3,.players-4) .player-0{align-self:end}
+ .fitted-table :is(.players-3,.players-4) .player-2{align-self:start}
+ .fitted-table .table-center{top:46%}
+ .fitted-table :is(.players-3,.players-4) .player:has(.equipment:not(:empty)){padding-right:100px}
+ .fitted-table :is(.players-3,.players-4) .player>.equipment:not(:empty){position:absolute;grid-column:auto;grid-row:auto;right:7px;top:50%;transform:translateY(-50%);width:84px;border-top:0;padding:0;gap:3px}
+ .fitted-table :is(.players-3,.players-4) .equipment .load-wrap{flex:0 1 38px;min-width:8px}
+ .fitted-table :is(.players-3,.players-4) .equipment .card-wrap.small{width:38px}
+}
+.fitted-table .equipment:empty{display:none}
+.fitted-table .equipment{gap:5px}
+.fitted-table .load-wrap{width:clamp(32px,4.8vh,46px);flex:0 1 clamp(32px,4.8vh,46px)}
+.fitted-table .equipment .card-wrap.small{width:clamp(32px,4.8vh,46px)}
+.fitted-table .equipment .magnifier{width:23px;height:23px;min-height:23px;background:#f8edceee;color:#3e3020;border:1px solid #9e8253}
+.fitted-table .equipment .poker{font-size:11px}
+.fitted-table .equipment .card-wrap:is(:hover,:focus-within)::after{content:attr(data-card-name);position:absolute;bottom:calc(100% + 6px);left:0;z-index:45;width:max-content;max-width:190px;background:#f5e8c9;color:#35291e;font-size:14px;font-weight:600;line-height:1.4;padding:7px 10px;border:1px solid #a48957;border-radius:6px;box-shadow:0 4px 12px #0005;pointer-events:none}
+.fitted-table .player-gold .gold-card.small{width:34px;height:48px}
+.fitted-table .character-portrait{width:clamp(38px,5.6vh,54px)}
+.fitted-table .table-center .card-back,.fitted-table .table-center .small{width:64px}
+.fitted-table .table-center .empty-card{width:64px;height:99px}
+.fitted-table .table-center .piles{gap:26px}
+.fitted-table .table-center span{font-size:12px}
+.fitted-table .table-center .magnifier{width:28px;height:28px;min-height:28px}
+.fitted-table .central-draw button{min-height:36px;font-size:13px}
+.fitted-table .decision-drawer{background:linear-gradient(145deg,#32382c,#1e2b23);border-color:#b39a68;box-shadow:inset 0 0 0 3px #c2a36c18,0 8px 24px #0004}
+.fitted-table .decision-drawer .drawer-head button{color:#f1e0bd}
+.fitted-table .decision-drawer :is(.event-panel p,.event-panel small,.event-panel>.eyebrow){color:#e8dbc0}
+.card-reading{align-self:center;padding:8px 4px;max-width:340px}
+.card-reading h3{font:700 25px Georgia,serif;line-height:1.2;color:#3a2c1d;margin:12px 0 16px}
+.card-reading p{font-size:18px;line-height:1.65;color:#332b22;margin:0 0 18px}
+.card-reading .eyebrow{color:#685332;letter-spacing:1px;font-size:11px}
+.card-reading small{display:block;color:#705d43;font-size:12px;line-height:1.5;border-top:1px solid #bda77b66;padding-top:12px}
+.card-reading .card-property{font-size:14px;font-weight:600}
+.zoom-card{gap:30px;grid-template-columns:minmax(0,220px) minmax(180px,340px)}
+.zoom-card>.card-wrap{transform:rotate(-2deg);filter:drop-shadow(0 8px 8px #45301733)}
+.handoff-receipt{width:min(520px,calc(100vw - 40px));margin:20px auto;padding:18px 22px;background:#203a30;border:1px solid #a48b5c66;border-radius:12px;color:#eee2c5;text-align:left;box-sizing:border-box;box-shadow:0 6px 24px #0002}
+.handoff-receipt .eyebrow{color:#d7be8b}
+.handoff-lines{font-size:15px;line-height:1.55;max-height:145px;overflow:auto;padding-left:20px;margin:10px 0 0}
+.handoff-lines li{margin:5px 0}
+.handoff-health{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:14px}
+.handoff-health>div{display:grid;gap:4px;padding:8px 12px;border-radius:7px;background:#ffffff0a}
+.handoff-health>div[data-kind=damage]{border-left:3px solid #d79173}
+.handoff-health>div[data-kind=heal]{border-left:3px solid #b7ce89}
+.handoff-lines{padding-left:0}
+.handoff-lines p{margin:7px 0}
+.curtain:has(.handoff-receipt) .card-back.large{width:62px;margin-bottom:16px}
+.health-delta{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:5px;font:600 13px/1.3 system-ui,sans-serif;background:#364c3c;color:#e9efce;white-space:nowrap}
+.health-delta[data-kind=damage]{background:#5a2d28;color:#ffe4d5}
+.health-delta[data-kind=heal]{background:#2f5039;color:#e6f4cc}
+.health-delta[data-kind=correction]{background:#4b4437;color:#f1e4c7}
+@media(prefers-reduced-motion:no-preference){
+ .health-delta{animation:health-receipt .45s ease-out both}
+ .handoff-receipt{animation:feedback-arrives .3s ease-out both}
+ .check-flip{transform-style:preserve-3d;backface-visibility:hidden}
+ .fitted-table .hand-dock .playing-card{animation-duration:.48s;animation-timing-function:cubic-bezier(.16,.8,.28,1)}
+}
+@keyframes health-receipt{from{opacity:0;transform:translateY(-7px) scale(1.12)}to{opacity:1;transform:none}}
+@keyframes feedback-arrives{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-height:760px){
+ .fitted-table .character-portrait{width:36px}
+ .fitted-table .load-wrap{width:32px;flex-basis:32px}
+ .fitted-table .equipment .card-wrap.small{width:32px}
+ .fitted-table .player-gold .gold-card.small{width:28px;height:39px}
+ .fitted-table .table-center .card-back,.fitted-table .table-center .small{width:53px}
+ .fitted-table .table-center .empty-card{width:53px;height:82px}
+}
+@media(max-width:600px){
+ .game.fitted-table{--hand-height:175px}
+ .fitted-table .table-felt:has(:is(.players-3,.players-4)){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:minmax(min-content,1fr) 92px minmax(min-content,1fr);column-gap:18px}
+ .fitted-table :is(.players-3,.players-4){display:contents}
+ .fitted-table .table-felt:has(:is(.players-3,.players-4)) .table-center{position:static;transform:none;grid-area:2/1/3/3;align-self:center;justify-self:center;margin:0}
+ .fitted-table .game-head{flex-wrap:nowrap;gap:5px;min-height:46px}
+ .fitted-table .game-head>div:not(.toolbar){min-width:68px}
+ .fitted-table .game-head .eyebrow{font-size:8px;letter-spacing:.6px}
+ .fitted-table .game-head h1{font-size:12px}
+ .fitted-table .toolbar{flex-wrap:nowrap;gap:2px}
+ .fitted-table .toolbar>button,.fitted-table .table-menu>summary{font-size:10px;padding:4px;min-height:32px}
+ .fitted-table .table-menu>summary{gap:4px}
+ .fitted-table :is(.players-3,.players-4){grid-template-rows:minmax(0,1fr) 82px minmax(0,1fr)}
+ .fitted-table :is(.players-3,.players-4) :is(.player-1,.player-2){align-self:start}
+ .fitted-table :is(.players-3,.players-4) :is(.player-0,.player-3){align-self:end}
+ .fitted-table .character-portrait{width:32px}
+ .fitted-table .load-wrap{width:26px;flex-basis:26px}
+ .fitted-table .equipment .card-wrap.small{width:26px}
+ .fitted-table .equipment{gap:3px}
+ .fitted-table .equipment .magnifier{width:20px;height:20px;min-height:20px}
+ .fitted-table .table-center .card-back,.fitted-table .table-center .small{width:38px}
+ .fitted-table .table-center .empty-card{width:38px;height:58px}
+ .fitted-table .table-center span{font-size:10px}
+ .fitted-table .table-center .piles{gap:20px}
+ .fitted-table .central-draw button{min-height:32px;font-size:12px}
+ .zoom-card{grid-template-columns:1fr;justify-items:center;gap:14px}
+ .zoom-card>.card-wrap{width:160px}
+ .card-reading h3{font-size:22px;margin-top:6px}
+ .card-reading p{font-size:16px;line-height:1.5}
+ .health-delta{font-size:11px;padding:2px 4px}
+}
+.fitted-table [data-load-target=true]{outline:2px solid #e7bc76;outline-offset:2px;border-radius:5px}.card-reading>strong{display:block;margin-bottom:8px;font-size:20px}

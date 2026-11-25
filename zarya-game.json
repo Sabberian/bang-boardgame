@@ -1,0 +1,9 @@
+{
+  "id": "bang",
+  "title": "Бэнг!",
+  "bgioName": "bang-boardgame",
+  "minPlayers": 3,
+  "maxPlayers": 8,
+  "publicUrl": "https://bang.zarya-boardgames.ru",
+  "channelName": "бэнг"
+}

@@ -1,0 +1,16 @@
+services:
+  bang:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3018:3003"
+    environment:
+      PORT: "3003"
+      PUBLIC_URL: ${PUBLIC_URL:?Set PUBLIC_URL to the deployed game URL}
+      PLATFORM_SECRET: ${PLATFORM_SECRET:?Set the shared platform secret}
+      MATCHES_DIR: /app/data/matches
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-}
+    volumes:
+      - bang-matches:/app/data/matches
+volumes:
+  bang-matches:

@@ -1,0 +1,11 @@
+import {describe,it,expect} from 'vitest';
+import {createLegends,performFeat,beginBoast,finishBoast,claimFeat,claimTargets,reviveLegendaryVulture,boastDiscardChoices,discardBoastFeat} from './legends-runtime.js';
+const host={shuffle:(x:string[])=>x,healToThree:()=>{},hit:()=>{},hp:()=>2,isSlab:()=>false,alive:()=>true};
+describe('Legends fame lifecycle',()=>{
+it('prevents repeat feats and transforms after five fame',()=>{const s=createLegends(['a'],['one','two','three'],host.shuffle);expect(performFeat(s,'a','three',host)).toBe(true);expect(performFeat(s,'a','three',host)).toBe(false);s.feats.push({kind:'two',tokens:{}},{kind:'one',tokens:{}});performFeat(s,'a','two',host);performFeat(s,'a','one',host);expect(s.legendary).toEqual(['a']);expect(s.fame.a).toBe(0)});
+it('boasts only without having performed',()=>{const s=createLegends(['a'],['one','two'],host.shuffle);expect(beginBoast(s,'a',host)).toBe(true);expect(finishBoast(s,'a','one',host)).toBe(true);expect(s.fame.a).toBe(4)});
+it('claims only against another living legend and respects final life',()=>{const s=createLegends(['a','b'],['one','two'],host.shuffle);s.legendary=['a','b'];expect(claimTargets(s,'a',{...host,hp:()=>1})).toEqual([]);expect(claimFeat(s,'a','two','a',host)).toBe(false);expect(claimFeat(s,'a','two','b',host)).toBe(true);expect(s.feats).toHaveLength(1)});
+it('Vulture cannot become legendary twice',()=>{const s=createLegends(['a'],['one'],host.shuffle);s.legendary=['a'];s.fame.a=0;expect(reviveLegendaryVulture(s,'a')).toBe(true);expect(performFeat(s,'a','one',host)).toBe(false)});
+});
+
+it('boast removes only a tied maximum and never returns spent fame',()=>{const s=createLegends(['a','b'],['one','two','three','four','five'],host.shuffle);s.feats=[{kind:'five',tokens:{a:2}},{kind:'four',tokens:{b:2}},{kind:'three',tokens:{}},{kind:'two',tokens:{}}];s.deck=['one'];expect(beginBoast(s,'a',host)).toBe(true);expect(boastDiscardChoices(s)).toEqual(['five','four']);expect(discardBoastFeat(s,'three')).toBe(false);expect(discardBoastFeat(s,'four')).toBe(true);expect(finishBoast(s,'a','five',host)).toBe(false);expect(finishBoast(s,'a','one',host)).toBe(true);expect(s.fame.a).toBe(4);expect(s.fame.b).toBe(5)});

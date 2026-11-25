@@ -1,0 +1,13 @@
+node_modules
+**/node_modules
+build
+**/dist
+data
+.git
+.env
+.env.*
+*.log
+scripts
+docs
+
+.qa-armed-build
